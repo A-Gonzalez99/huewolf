@@ -1,0 +1,56 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extName__",
+  "version": "1.0.0",
+  "default_locale": "en",
+  "description": "__MSG_extDescription__",
+  "homepage_url": "https://github.com/A-Gonzalez99/huewolf",
+  "icons": {
+    "16": "icons/tabs-dark.svg",
+    "32": "icons/tabs-dark.svg",
+    "48": "icons/tabs-dark.svg"
+  },
+  "permissions": [
+    "theme",
+    "tabs",
+    "storage",
+    "menus",
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": false
+  },
+  "browser_action": {
+    "default_title": "__MSG_actionHide__",
+    "default_area": "navbar",
+    "default_icon": "icons/tabs-dark.svg",
+    "theme_icons": [
+      { "light": "icons/tabs-light.svg", "dark": "icons/tabs-dark.svg", "size": 16 },
+      { "light": "icons/tabs-light.svg", "dark": "icons/tabs-dark.svg", "size": 32 }
+    ]
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": { "default": "Alt+Shift+T" },
+      "description": "__MSG_commandToggle__"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "huewolf@extension",
+      "strict_min_version": "128.0"
+    }
+  }
+}

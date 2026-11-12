@@ -1,0 +1,95 @@
+{
+  "extName": {
+    "message": "Huewolf"
+  },
+  "extDescription": {
+    "message": "Tiñe la interfaz de LibreWolf con el color de la web activa y añade un botón para ocultar la fila de pestañas."
+  },
+  "actionHide": {
+    "message": "Ocultar pestañas"
+  },
+  "actionShow": {
+    "message": "Mostrar pestañas"
+  },
+  "commandToggle": {
+    "message": "Ocultar o mostrar la fila de pestañas"
+  },
+  "menuGlass": {
+    "message": "Efecto cristal"
+  },
+  "menuAutoHide": {
+    "message": "Ocultar pestañas si solo hay una"
+  },
+  "menuOptions": {
+    "message": "Ajustes de Huewolf…"
+  },
+  "previewUrl": {
+    "message": "ejemplo.com"
+  },
+  "previewLight": {
+    "message": "Web clara"
+  },
+  "previewYellow": {
+    "message": "Web amarilla"
+  },
+  "previewDark": {
+    "message": "Web oscura"
+  },
+  "sectionAppearance": {
+    "message": "Apariencia"
+  },
+  "optGlassTitle": {
+    "message": "Efecto cristal"
+  },
+  "optGlassHint": {
+    "message": "Barras translúcidas que dejan ver, desenfocado, lo que hay detrás de la ventana."
+  },
+  "optOpacityTitle": {
+    "message": "Color de la web en el cristal"
+  },
+  "optOpacityHint": {
+    "message": "Menos es más transparente."
+  },
+  "sectionNeutral": {
+    "message": "Páginas sin color"
+  },
+  "optNeutralTitle": {
+    "message": "Color predeterminado"
+  },
+  "optNeutralHint": {
+    "message": "Para la nueva pestaña, los ajustes, los complementos, los PDF y las webs sin fondo propio."
+  },
+  "optLight": {
+    "message": "Claro"
+  },
+  "optDark": {
+    "message": "Oscuro"
+  },
+  "optNeutralDefault": {
+    "message": "Por defecto: blanco en modo claro y gris en modo oscuro."
+  },
+  "optReset": {
+    "message": "Restablecer"
+  },
+  "sectionTabs": {
+    "message": "Pestañas"
+  },
+  "optAutoHideTitle": {
+    "message": "Ocultar la fila de pestañas si solo hay una"
+  },
+  "optAutoHideHint": {
+    "message": "El botón de pestañas la muestra igualmente."
+  },
+  "optToggleTitle": {
+    "message": "Mostrar u ocultar pestañas"
+  },
+  "optToggleHint": {
+    "message": "También con el botón de la barra; clic derecho en él para más opciones."
+  },
+  "keyShift": {
+    "message": "Mayús"
+  },
+  "optNote": {
+    "message": "El cristal necesita huewolf-glass.css activo y «Efectos de transparencia» activado en Windows."
+  }
+}

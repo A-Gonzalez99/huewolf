@@ -1,0 +1,66 @@
+/* ==========================================================================
+   Huewolf — GLASS version
+   https://github.com/A-Gonzalez99/huewolf
+   Takes the whole opaque version (huewolf.css) and makes it translucent:
+   the toolbars show a blurred view of what is behind the window, tinted
+   with the colour of the current website.
+
+   Requires (included in user.js):
+     widget.windows.mica = true
+     widget.windows.mica.toplevel-backdrop = 2   (2 = acrylic, 1 = mica)
+   and in Windows: Settings → Personalization → Colors →
+     "Transparency effects" turned on.
+   ========================================================================== */
+
+@import url("huewolf.css");
+
+:root {
+  /* Transparency is decided by the Huewolf extension (right-click its
+     button → "Glass effect", or its Settings for the opacity): it paints
+     the toolbar with the site colour, semi-transparent or solid, and here
+     that colour is used as is. */
+  --hw-bg: var(--toolbar-background-color);
+  /* Thin outline, equal on all four sides, plus a very soft centred
+     shadow: all corners look the same. */
+  --glass-ring: 0 0 0 0.5px color-mix(in srgb, currentColor 12%, transparent);
+  --glass-shadow: 0 1px 3px rgba(0, 0, 0, .07);
+}
+
+/* Let the system material through the window.
+   In LibreWolf 159 the <body> paints the opaque theme colour
+   (--toolbox-background-color); with a tinted site it covered the glass. */
+:root,
+#main-window,
+body {
+  background: transparent !important;
+  background-image: none !important;
+  --toolbox-background-color: transparent !important;
+  --toolbox-background-color-inactive: transparent !important;
+  --toolbox-background-image: none !important;
+}
+
+/* A single tint for the whole toolbar area; the toolbars themselves are
+   transparent so the tint does not stack layer upon layer. */
+#navigator-toolbox {
+  background: var(--hw-bg) !important;
+}
+#nav-bar,
+#PersonalToolbar,
+#TabsToolbar,
+#titlebar {
+  background: transparent !important;
+}
+
+/* Address field and selected tab: the same piece of glass */
+#urlbar:not([focused]):not([open]) #urlbar-background,
+.tabbrowser-tab[selected] .tab-background {
+  box-shadow: var(--glass-ring), var(--glass-shadow) !important;
+}
+
+/* With "reduce transparency", opaque: --lwt-accent-color is the solid
+   site colour set by the extension. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --hw-bg: var(--lwt-accent-color, var(--toolbar-background-color));
+  }
+}

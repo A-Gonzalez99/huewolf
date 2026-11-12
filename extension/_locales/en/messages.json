@@ -1,0 +1,95 @@
+{
+  "extName": {
+    "message": "Huewolf"
+  },
+  "extDescription": {
+    "message": "Tints the LibreWolf interface with the colour of the current website and adds a button to hide the tab row."
+  },
+  "actionHide": {
+    "message": "Hide tabs"
+  },
+  "actionShow": {
+    "message": "Show tabs"
+  },
+  "commandToggle": {
+    "message": "Hide or show the tab row"
+  },
+  "menuGlass": {
+    "message": "Glass effect"
+  },
+  "menuAutoHide": {
+    "message": "Hide tabs when there is only one"
+  },
+  "menuOptions": {
+    "message": "Huewolf settings…"
+  },
+  "previewUrl": {
+    "message": "example.com"
+  },
+  "previewLight": {
+    "message": "Light site"
+  },
+  "previewYellow": {
+    "message": "Yellow site"
+  },
+  "previewDark": {
+    "message": "Dark site"
+  },
+  "sectionAppearance": {
+    "message": "Appearance"
+  },
+  "optGlassTitle": {
+    "message": "Glass effect"
+  },
+  "optGlassHint": {
+    "message": "Translucent toolbars that show a blurred view of what is behind the window."
+  },
+  "optOpacityTitle": {
+    "message": "Site colour in the glass"
+  },
+  "optOpacityHint": {
+    "message": "Lower is more transparent."
+  },
+  "sectionNeutral": {
+    "message": "Pages without colour"
+  },
+  "optNeutralTitle": {
+    "message": "Default colour"
+  },
+  "optNeutralHint": {
+    "message": "For the new tab page, settings, add-ons, PDFs and sites without their own background."
+  },
+  "optLight": {
+    "message": "Light"
+  },
+  "optDark": {
+    "message": "Dark"
+  },
+  "optNeutralDefault": {
+    "message": "Default: white in light mode and grey in dark mode."
+  },
+  "optReset": {
+    "message": "Reset"
+  },
+  "sectionTabs": {
+    "message": "Tabs"
+  },
+  "optAutoHideTitle": {
+    "message": "Hide the tab row when there is only one tab"
+  },
+  "optAutoHideHint": {
+    "message": "The tabs button can still show it."
+  },
+  "optToggleTitle": {
+    "message": "Show or hide tabs"
+  },
+  "optToggleHint": {
+    "message": "Also with the toolbar button; right-click it for more options."
+  },
+  "keyShift": {
+    "message": "Shift"
+  },
+  "optNote": {
+    "message": "Glass needs huewolf-glass.css active and “Transparency effects” turned on in Windows."
+  }
+}

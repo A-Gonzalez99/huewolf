@@ -1,0 +1,363 @@
+/* ==========================================================================
+   Huewolf — opaque version
+   https://github.com/A-Gonzalez99/huewolf
+   - Address bar on top, bookmarks below it and tabs last.
+   - The toolbars follow the colour of the current website through the
+     Huewolf extension (extension/ folder). Without it, the normal
+     light/dark theme is used.
+
+   Requires:
+     about:config → toolkit.legacyUserProfileCustomizations.stylesheets = true
+   ========================================================================== */
+
+:root {
+  --hw-toolbar-height: 44px;
+  --hw-radius: 12px;
+  /* Same radius as the address field (both are the same height),
+     so tabs and the field share one shape. */
+  --hw-tab-radius: var(--hw-radius);
+  /* Firefox uses this variable for the close button, the container line
+     and the tab group line: keeps everything concentric. */
+  --tab-border-radius: var(--hw-tab-radius) !important;
+  --hw-ease: 180ms ease;
+  --hw-tint: 250ms ease;
+
+  /* Everything derives from the theme colour, which the extension changes
+     per site. Fills are mixed with the text colour, so they work the same
+     on light and dark backgrounds. */
+  --hw-bg: var(--toolbar-background-color);
+  --hw-fg: var(--toolbar-text-color);
+  --hw-field: color-mix(in srgb, currentColor 9%, transparent);
+  --hw-field-hover: color-mix(in srgb, currentColor 14%, transparent);
+  --hw-tab-hover: color-mix(in srgb, currentColor 7%, transparent);
+  --hw-tab-selected: color-mix(in srgb, currentColor 13%, transparent);
+  --hw-line: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+/* ---------- Order: address → bookmarks → tabs ---------- */
+#navigator-toolbox {
+  display: flex !important;
+  flex-direction: column !important;
+  background: var(--hw-bg) !important;
+  color: var(--hw-fg) !important;
+  border-bottom: 0 !important;
+  transition: background-color var(--hw-tint) !important;
+}
+
+/* No line between the interface and the page */
+:root {
+  --chrome-content-separator-color: transparent !important;
+}
+#browser,
+#tabbrowser-tabbox,
+#tabbrowser-tabpanels {
+  border-top: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+#nav-bar          { order: 0 !important; }
+#PersonalToolbar  { order: 1 !important; }
+#titlebar,                       /* older versions */
+#TabsToolbar      { order: 2 !important; }
+
+/* One single colour surface for all toolbars */
+#nav-bar,
+#PersonalToolbar,
+#TabsToolbar {
+  background: var(--hw-bg) !important;
+  color: var(--hw-fg) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transition: background-color var(--hw-tint), color var(--hw-tint) !important;
+}
+
+/* ---------- Top bar ---------- */
+#nav-bar {
+  min-height: var(--hw-toolbar-height) !important;
+  padding-block: 4px !important;
+  padding-inline: 8px !important;
+}
+
+/* With the integrated title bar, the top row acts as the title bar:
+   the window can be dragged from it and there is room for the
+   window buttons. */
+:root:is([tabsintitlebar], [customtitlebar]):not([inFullscreen]) #nav-bar {
+  padding-inline-end: 160px !important;
+  -moz-window-dragging: drag;
+}
+:root:is([tabsintitlebar], [customtitlebar]):not([inFullscreen]) #nav-bar-customization-target {
+  -moz-window-dragging: drag;
+}
+#nav-bar toolbarbutton,
+#nav-bar toolbaritem,
+#urlbar {
+  -moz-window-dragging: no-drag;
+}
+
+/* Window buttons (minimise, maximise, close) at the top right */
+:root:is([tabsintitlebar], [customtitlebar]):not([inFullscreen]) #TabsToolbar .titlebar-buttonbox-container {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  height: var(--hw-toolbar-height) !important;
+  display: flex !important;
+  align-items: center !important;
+  z-index: 10 !important;
+}
+
+#TabsToolbar .titlebar-spacer {
+  display: none !important;
+}
+
+/* Navigation buttons */
+#nav-bar .toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  border-radius: 8px !important;
+  transition: background-color var(--hw-ease) !important;
+}
+#nav-bar .toolbarbutton-1:not([disabled]):hover > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  background: var(--hw-tab-hover) !important;
+}
+
+/* ---------- Centred address field ---------- */
+#urlbar-container {
+  max-width: 640px !important;
+  margin-inline: auto !important;
+}
+
+#urlbar {
+  --urlbar-height: 32px !important;
+  color: var(--hw-fg) !important;
+}
+
+#urlbar-background {
+  background: var(--hw-field) !important;
+  border: 0 !important;
+  border-radius: var(--hw-radius) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: background-color var(--hw-ease), box-shadow var(--hw-ease) !important;
+}
+
+#urlbar:not([focused]):hover #urlbar-background {
+  background: var(--hw-field-hover) !important;
+}
+
+#urlbar[focused] #urlbar-background {
+  background: var(--hw-field-hover) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, AccentColor 45%, transparent) !important;
+}
+
+/* Suggestions dropdown: opaque so it is easy to read */
+#urlbar[open] #urlbar-background {
+  background: var(--panel-background-color, var(--urlbar-background-color-focus)) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .22) !important;
+}
+#urlbar[open] {
+  color: var(--panel-text-color, var(--toolbar-field-text-color-focus)) !important;
+}
+.urlbarView-row {
+  border-radius: 8px !important;
+}
+
+/* Address centred while not typing */
+#urlbar:not([focused]) .urlbar-input {
+  text-align: center !important;
+}
+
+/* Less noise: secondary icons only on hover */
+#tracking-protection-icon-container,
+#identity-icon-label {
+  display: none !important;
+}
+#urlbar:not([focused]):not(:hover) #page-action-buttons {
+  opacity: 0 !important;
+}
+#page-action-buttons {
+  transition: opacity var(--hw-ease) !important;
+}
+
+/* If the "+" button is placed in the top bar, hide the one in the tab row. */
+#navigator-toolbox:has(#nav-bar #new-tab-button) #tabs-newtab-button {
+  display: none !important;
+}
+
+/* ---------- Tabs ---------- */
+#TabsToolbar {
+  min-height: 0 !important;
+  padding: 0 6px 5px !important;
+}
+
+#tabbrowser-tabs {
+  border: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Equal-width tabs that fill the row.
+   Only applied to open tabs ([fadein]). A closing tab loses [fadein] and
+   Firefox shrinks it to 0 before removing it; if that shrinking is
+   removed, Firefox leaves an invisible gap for ~3 s and new tabs are
+   placed wrongly. */
+.tabbrowser-tab:not([pinned]) {
+  flex: 1 1 0 !important;
+}
+.tabbrowser-tab:not([pinned])[fadein] {
+  max-width: 100vw !important;
+  min-width: 76px !important;
+}
+
+.tabbrowser-tab {
+  min-height: 32px !important;
+  padding-inline: 2px !important;
+  color: var(--hw-fg) !important;
+}
+
+.tab-background {
+  margin-block: 2px !important;
+  border-radius: var(--hw-tab-radius) !important;
+  /* LibreWolf 159 ("nova" design) adds a 1px transparent border: inner
+     shadows ended up 1px inside it, with a curve that did not match the
+     corner. Removed. */
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: background-color var(--hw-ease) !important;
+}
+
+.tabbrowser-tab:hover:not([selected]) .tab-background {
+  background: var(--hw-tab-hover) !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+  background: var(--hw-tab-selected) !important;
+}
+
+/* Icon + title centred in the tab.
+   Padding is equal on both sides so the close button (floating on the
+   left) does not push the title off-centre. */
+.tabbrowser-tab:not([pinned]) .tab-content {
+  width: 100% !important;
+  justify-content: center !important;
+  padding-inline: 28px !important;
+}
+.tabbrowser-tab:not([pinned]) .tab-icon-stack {
+  margin-inline-start: auto !important;
+}
+/* The title container has flex="1", and xul.css (a browser sheet) forces
+   "flex: 1 !important", which userChrome.css cannot override: it always
+   grows to fill the tab and leaves the title on the left. Capping its
+   maximum width to the text leaves free space for centring. */
+.tabbrowser-tab:not([pinned]) .tab-label-container {
+  max-width: max-content !important;
+  margin-inline-end: auto !important;
+}
+.tab-label {
+  font-size: 12px !important;
+}
+
+/* Close button: only on hover, on the left.
+   It floats over the tab and takes no space. */
+.tabbrowser-tab:not([pinned]) .tab-close-button {
+  position: absolute !important;
+  inset-inline-start: 4px !important;
+  top: 50% !important;
+  margin: 0 !important;
+  translate: 0 -50% !important;
+}
+.tab-close-button {
+  border-radius: calc(var(--hw-tab-radius) - 4px) !important;
+  opacity: 0 !important;
+  transition: opacity var(--hw-ease) !important;
+}
+.tabbrowser-tab:hover .tab-close-button {
+  opacity: 1 !important;
+}
+
+/* When closing with the mouse, Firefox freezes the tab widths and adds a
+   gap until the mouse leaves the row. If the row hides (one tab left) the
+   mouse never "leaves" and tabs stay misplaced. Disabled. */
+#tabbrowser-tabs .closing-tabs-spacer {
+  display: none !important;
+}
+
+/* ---------- Hiding the tab row ----------
+   1. Automatically when there is only one tab.
+   2. With the tabs button in the toolbar (Huewolf extension) or
+      Alt+Shift+T.
+   The extension sets the button title to "Show tabs" (or the translated
+   "Mostrar pestañas") in each window where the row should be hidden, and
+   it is detected here. Add new translations to the selectors below.
+   The row collapses in height instead of being removed, so tabs keep
+   their size and come back correctly placed. */
+#TabsToolbar {
+  max-height: 60px;
+  transition: max-height 200ms ease, padding 200ms ease !important;
+}
+#TabsToolbar > :not(.titlebar-buttonbox-container) {
+  transition: opacity 150ms ease !important;
+}
+
+/* Tabs button styled like the native ones (like "+"): uses the browser's
+   own icons and icon colour.
+   - Tabs visible: window with a tab strip (window.svg)
+   - Tabs hidden: empty window (tab.svg)
+   It stays wherever you put it in "Customize Toolbar". */
+#huewolf_extension-browser-action {
+  --tabs-toggle-icon: url("chrome://browser/skin/window.svg");
+}
+:root:has(:is(#huewolf_extension-browser-action, #huewolf_extension-browser-action *):is([label*="Show tabs"], [tooltiptext*="Show tabs"], [label*="Mostrar pestañas"], [tooltiptext*="Mostrar pestañas"])) #huewolf_extension-browser-action {
+  --tabs-toggle-icon: url("chrome://browser/skin/tab.svg");
+}
+#huewolf_extension-browser-action .toolbarbutton-icon {
+  list-style-image: var(--tabs-toggle-icon) !important;
+  -moz-context-properties: fill, fill-opacity !important;
+  fill: var(--toolbarbutton-icon-fill, currentColor) !important;
+  fill-opacity: var(--toolbarbutton-icon-fill-opacity, 1) !important;
+}
+
+/* Tab count badge: a small rounded pill */
+#huewolf_extension-browser-action .toolbarbutton-badge {
+  min-width: 14px !important;
+  height: 14px !important;
+  padding: 0 4px !important;
+  margin: -5px -7px 0 0 !important;
+  border-radius: 7px !important;
+  font: 600 9px/14px system-ui, sans-serif !important;
+  text-align: center !important;
+  box-shadow: 0 0 0 1.5px var(--hw-bg, var(--toolbar-background-color)) !important;
+}
+
+/* The extension decides per window whether the row is shown (including
+   auto-hide with one tab) and signals it through the button title.
+   The title may be on the button or (recent LibreWolf) on its inner button. */
+:root:has(:is(#huewolf_extension-browser-action, #huewolf_extension-browser-action *):is([label*="Show tabs"], [tooltiptext*="Show tabs"], [label*="Mostrar pestañas"], [tooltiptext*="Mostrar pestañas"])) #TabsToolbar {
+  max-height: 0 !important;
+  min-height: 0 !important;
+  padding-block: 0 !important;
+  overflow: clip !important;
+}
+:root:has(:is(#huewolf_extension-browser-action, #huewolf_extension-browser-action *):is([label*="Show tabs"], [tooltiptext*="Show tabs"], [label*="Mostrar pestañas"], [tooltiptext*="Mostrar pestañas"])) #TabsToolbar > :not(.titlebar-buttonbox-container) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+
+/* ---------- Bookmarks ---------- */
+#PersonalToolbar {
+  padding: 0 8px 4px !important;
+}
+#PlacesToolbarItems > .bookmark-item {
+  border-radius: 7px !important;
+}
+#PlacesToolbarItems > .bookmark-item:hover {
+  background: var(--hw-tab-hover) !important;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #navigator-toolbox,
+  #navigator-toolbox * {
+    transition: none !important;
+  }
+}

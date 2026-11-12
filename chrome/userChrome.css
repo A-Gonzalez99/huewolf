@@ -1,0 +1,7 @@
+/* Huewolf — https://github.com/A-Gonzalez99/huewolf
+   Pick a version by leaving ONE line active, then restart LibreWolf.
+   - huewolf.css        → opaque
+   - huewolf-glass.css  → glass (see what is behind the window; Windows 11) */
+
+@import url("huewolf-glass.css");
+/* @import url("huewolf.css"); */

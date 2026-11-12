@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Huewolf</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --fg: #1d1d1f;
+    --muted: #6e6e73;
+    --card: rgba(255, 255, 255, .72);
+    --card-solid: #ffffff;
+    --line: rgba(0, 0, 0, .08);
+    --track: rgba(0, 0, 0, .12);
+    --knob-shadow: 0 1px 3px rgba(0, 0, 0, .25), 0 0 0 .5px rgba(0, 0, 0, .06);
+    --accent: AccentColor;
+    --radius: 12px;
+    font: 13px/1.4 system-ui, "Segoe UI Variable Text", "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #f5f5f7;
+      --muted: #a1a1a6;
+      --card: rgba(255, 255, 255, .06);
+      --card-solid: #2c2c2e;
+      --line: rgba(255, 255, 255, .08);
+      --track: rgba(255, 255, 255, .16);
+      --knob-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 4px 4px 20px; color: var(--fg); max-width: 640px; }
+
+  /* ---------- Preview ---------- */
+  .preview {
+    position: relative;
+    height: 112px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(circle at 18% 30%, #ff9f0a 0 22%, transparent 23%),
+      radial-gradient(circle at 70% 10%, #bf5af2 0 26%, transparent 27%),
+      radial-gradient(circle at 92% 80%, #30d158 0 20%, transparent 21%),
+      linear-gradient(135deg, #0a84ff, #5e5ce6);
+  }
+  .preview .win {
+    --tint: 222, 236, 255;
+    position: absolute; inset: 22px 22px -1px;
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .3);
+    display: flex; flex-direction: column;
+  }
+  .preview .bar {
+    height: 38px;
+    display: flex; align-items: center; gap: 8px; padding: 0 10px;
+    background: rgba(var(--tint), var(--alpha, .18));
+    backdrop-filter: blur(16px) saturate(1.6);
+    transition: background-color 200ms ease;
+  }
+  .preview .dots { display: flex; gap: 5px; }
+  .preview .dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(0, 0, 0, .18); }
+  .preview .field {
+    flex: 1; max-width: 260px; height: 22px; margin-inline: auto;
+    border-radius: 7px; background: rgba(0, 0, 0, .08);
+    display: grid; place-items: center;
+    font-size: 11px; color: rgba(0, 0, 0, .65);
+  }
+  .preview .page { flex: 1; background: rgb(var(--tint)); }
+  .preview .chips {
+    position: absolute; right: 30px; bottom: 12px; display: flex; gap: 6px;
+  }
+  .preview .chips button {
+    width: 16px; height: 16px; border-radius: 50%; padding: 0;
+    border: 2px solid rgba(255, 255, 255, .9); cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+  }
+  .preview .chips button[aria-pressed="true"] { outline: 2px solid #fff; outline-offset: 1px; }
+
+  /* ---------- Groups ---------- */
+  h2 {
+    font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase;
+    color: var(--muted); margin: 18px 12px 6px;
+  }
+  .group {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .row {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 11px 14px; min-height: 48px;
+  }
+  .row + .row { border-top: 1px solid var(--line); }
+  .row label, .row .title { font-weight: 500; }
+  .hint { color: var(--muted); font-size: 12px; margin-top: 1px; }
+  .disabled { opacity: .4; pointer-events: none; }
+  .row, .disabled { transition: opacity 150ms ease; }
+
+  /* Toggle switch */
+  .switch { position: relative; flex: none; width: 38px; height: 22px; }
+  .switch input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+  .switch span {
+    position: absolute; inset: 0; border-radius: 11px; background: var(--track);
+    transition: background-color 180ms ease; pointer-events: none;
+  }
+  .switch span::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; border-radius: 50%; background: #fff;
+    box-shadow: var(--knob-shadow);
+    transition: transform 220ms cubic-bezier(.3, 1.4, .5, 1);
+  }
+  .switch input:checked + span { background: var(--accent); }
+  .switch input:checked + span::after { transform: translateX(16px); }
+  .switch input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .slider { display: flex; align-items: center; gap: 10px; flex: none; }
+  input[type="range"] { width: 170px; accent-color: var(--accent); }
+  output { min-width: 4ch; text-align: end; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+  /* Colour swatches */
+  .swatches { display: flex; align-items: center; gap: 14px; flex: none; }
+  .swatch { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+  input[type="color"] {
+    width: 28px; height: 28px; padding: 0; border: 1px solid var(--line);
+    border-radius: 8px; background: none; cursor: pointer;
+  }
+  input[type="color"]::-moz-color-swatch { border: 0; border-radius: 7px; }
+  button.link {
+    border: 0; background: none; padding: 4px 6px; border-radius: 6px;
+    color: var(--accent); font: inherit; cursor: pointer;
+  }
+  button.link:hover { background: var(--line); }
+
+  kbd {
+    font: 500 11px/1 system-ui, sans-serif; padding: 3px 6px; border-radius: 5px;
+    background: var(--card-solid); border: 1px solid var(--line);
+    box-shadow: 0 1px 0 var(--line);
+  }
+  p.note { color: var(--muted); font-size: 12px; margin: 10px 12px 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="preview" aria-hidden="true">
+    <div class="win" id="preview-win">
+      <div class="bar" id="preview-bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="field" data-i18n="previewUrl">example.com</div>
+      </div>
+      <div class="page"></div>
+    </div>
+    <div class="chips" id="chips">
+      <button data-tint="222, 236, 255" style="background:#deecff" aria-pressed="true" data-i18n-title="previewLight"></button>
+      <button data-tint="255, 214, 10" style="background:#ffd60a" data-i18n-title="previewYellow"></button>
+      <button data-tint="28, 28, 30" style="background:#1c1c1e" data-i18n-title="previewDark"></button>
+    </div>
+  </div>
+
+  <h2 data-i18n="sectionAppearance">Appearance</h2>
+  <div class="group">
+    <div class="row">
+      <div>
+        <label for="glass" data-i18n="optGlassTitle">Glass effect</label>
+        <div class="hint" data-i18n="optGlassHint"></div>
+      </div>
+      <span class="switch"><input type="checkbox" id="glass" role="switch"><span></span></span>
+    </div>
+    <div class="row" id="opacity-row">
+      <div>
+        <label for="opacity" data-i18n="optOpacityTitle">Site colour in the glass</label>
+        <div class="hint" data-i18n="optOpacityHint"></div>
+      </div>
+      <div class="slider">
+        <input type="range" id="opacity" min="0" max="80" step="1">
+        <output id="opacity-value"></output>
+      </div>
+    </div>
+  </div>
+
+  <h2 data-i18n="sectionNeutral">Pages without colour</h2>
+  <div class="group">
+    <div class="row">
+      <div>
+        <div class="title" data-i18n="optNeutralTitle">Default colour</div>
+        <div class="hint" data-i18n="optNeutralHint"></div>
+      </div>
+      <div class="swatches">
+        <label class="swatch"><span data-i18n="optLight">Light</span> <input type="color" id="neutral-light"></label>
+        <label class="swatch"><span data-i18n="optDark">Dark</span> <input type="color" id="neutral-dark"></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="hint" data-i18n="optNeutralDefault"></div>
+      <button class="link" id="reset-neutral" data-i18n="optReset">Reset</button>
+    </div>
+  </div>
+
+  <h2 data-i18n="sectionTabs">Tabs</h2>
+  <div class="group">
+    <div class="row">
+      <div>
+        <label for="autohide" data-i18n="optAutoHideTitle">Hide the tab row when there is only one tab</label>
+        <div class="hint" data-i18n="optAutoHideHint"></div>
+      </div>
+      <span class="switch"><input type="checkbox" id="autohide" role="switch"><span></span></span>
+    </div>
+    <div class="row">
+      <div>
+        <div class="title" data-i18n="optToggleTitle">Show or hide tabs</div>
+        <div class="hint" data-i18n="optToggleHint"></div>
+      </div>
+      <span><kbd>Alt</kbd> + <kbd data-i18n="keyShift">Shift</kbd> + <kbd>T</kbd></span>
+    </div>
+  </div>
+
+  <p class="note" data-i18n="optNote"></p>
+
+  <script src="options.js"></script>
+</body>
+</html>
